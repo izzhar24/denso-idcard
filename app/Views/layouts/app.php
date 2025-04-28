@@ -60,7 +60,7 @@
                 <li class="<?= isActive('/choose-background', $currentUrl) ?>">
                     <a href="/choose-background"><i class="bx bx-book-content"></i> <span>Pilih Background</span></a>
                 </li>
-                <li class="<?= isActive('/print', $currentUrl) ?>">
+                <li class="<?= isActive('/print-preview', $currentUrl) ?>">
                     <a href="/print-preview"><i class="bx bx-file-blank"></i> <span>Preview / Cetak</span></a>
                 </li>
             </ul>
