@@ -7,35 +7,28 @@ use PDOException;
 
 class Database
 {
-    private static $instance = null;
-    private $connection;
+    private static $pdo;
 
-    private function __construct()
+    public static function getPDO()
     {
-        $config = require __DIR__ . '/../../config/config.php';
+        if (!self::$pdo) {
+            // Gunakan $_ENV atau getenv setelah .env diload
+            $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
+            $port = $_ENV['DB_PORT'] ?? '3306';
+            $name = $_ENV['DB_DATABASE'] ?? 'your_database_name';
+            $user = $_ENV['DB_USERNAME'] ?? 'root';
+            $pass = $_ENV['DB_PASSWORD'] ?? '';
 
-        try {
-            $this->connection = new PDO(
-                "mysql:host={$config['db']['host']};dbname={$config['db']['dbname']}",
-                $config['db']['user'],
-                $config['db']['password']
-            );
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die('Database error: ' . $e->getMessage());
+            try {
+                self::$pdo = new PDO("mysql:host=$host;port=$port;dbname=$name", $user, $pass, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]);
+            } catch (PDOException $e) {
+                die("DB Connection failed: " . $e->getMessage());
+            }
         }
-    }
 
-    public static function getInstance()
-    {
-        if (self::$instance === null) {
-            self::$instance = new Database();
-        }
-        return self::$instance;
-    }
-
-    public function getConnection()
-    {
-        return $this->connection;
+        return self::$pdo;
     }
 }

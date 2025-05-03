@@ -36,39 +36,62 @@ if (!function_exists('asset')) {
         return ASSET_PATH . $file;
     }
 }
+$__pushStacks = [];
+$__currentPushSection = null;
 
-$GLOBALS['__current_stack'] = null;
-$GLOBALS['__push_stacks'] = [];
+function startPush($section) {
+    global $__currentPushSection;
+    ob_start();
+    $__currentPushSection = $section;
+}
 
-if (!function_exists('startPush')) {
-    function startPush($stack)
-    {
-        $GLOBALS['__current_stack'] = $stack;
-        if (!isset($GLOBALS['__push_stacks'][$stack])) {
-            $GLOBALS['__push_stacks'][$stack] = [];
-        }
+function endPush() {
+    global $__pushStacks, $__currentPushSection;
+    $content = ob_get_clean();
+    $__pushStacks[$__currentPushSection][] = $content;
+}
 
-        ob_start();
+function renderPush($section) {
+    global $__pushStacks;
+    if (!empty($__pushStacks[$section])) {
+        echo implode("\n", $__pushStacks[$section]);
     }
 }
 
-if (!function_exists('endPush')) {
-    function endPush()
+if (!function_exists('loadEnv')) {
+    function loadEnv($path = __DIR__ . '/../../.env')
     {
-        $content = ob_get_clean();
-        $stack = $GLOBALS['__current_stack'];
-        $GLOBALS['__push_stacks'][$stack][] = $content;
-        $GLOBALS['__current_stack'] = null; // Reset current stack
+        if (!file_exists($path)) return;
+
+        foreach (file($path) as $line) {
+            $line = trim($line);
+            if ($line === '' || str_starts_with($line, '#')) continue;
+
+            [$key, $val] = explode('=', $line, 2);
+            $_ENV[trim($key)] = trim($val);
+        }
     }
 }
 
-if (!function_exists('renderPush')) {
-    function renderPush($stack)
+if (!function_exists('json')) {
+    function json($data, $statusCode = 200)
     {
-        if (!isset($GLOBALS['__push_stacks'][$stack])) {
-            return '';
-        }
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
+}
 
-        return implode("\n", $GLOBALS['__push_stacks'][$stack]);
+if (!function_exists('json_error')) {
+    function json_error($message = 'Terjadi kesalahan.', $statusCode = 400)
+    {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => $message
+        ]);
+        exit;
     }
 }

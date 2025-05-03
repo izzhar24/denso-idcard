@@ -9,6 +9,6 @@
             <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
             <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
         </div>
-        <div class="text-left"><img src="assets/img/start_here.png" width="175" style="margin-top: 15px; cursor: pointer;" title="Start Here (Mulai disini)" onClick="return window.location = '/card'"></div>
+        <a href="/card" class="btn btn-dark btn-lg mt-2 rounded-pill">Start Here</a>
     </div>
 </section>
