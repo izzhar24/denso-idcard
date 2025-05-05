@@ -10,16 +10,35 @@
                     <div class="employee-npk"><?= $employee['npk'] ?></div>
                 </div>
             </div>
-            <button onclick="printIDCard()" class="btn btn-dark btn-print rounded-lg btn-lg">
+            <button onclick="showPrintModal()" class="btn btn-dark btn-print rounded-lg btn-lg">
                 <i class="icofont-print"></i>
             </button>
         </div>
     </div>
 </section>
 
+<div class="modal fade" id="confirmPrintModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi Cetak</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda yakin ingin mencetak ID Card ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="confirmPrint()">Ya, Cetak</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php startPush('style') ?>
 <style>
-
     .idcard-container {
         position: relative;
         margin-top: 5rem;
@@ -71,17 +90,48 @@
         z-index: 9;
         padding: 5px 10px;
     }
-
 </style>
 <?php endPush() ?>
 
 <?php startPush('scripts') ?>
 <script>
-    function printIDCard() {
-        const name = "<?= $employee['name'] ?>";
-        const npk = "<?= $employee['npk'] ?>";
-        const photo = "<?= $photo ?>";
-        const bg = "<?= asset($background) ?>";
+    function showPrintModal() {
+        $('#confirmPrintModal').modal('show');
+    }
+
+    function confirmPrint() {
+        $('#confirmPrintModal').modal('hide');
+
+        const payload = {
+            name: "<?= $employee['name'] ?>",
+            npk: "<?= $employee['npk'] ?>",
+            photo: "<?= $photo ?>",
+            bg: "<?= asset($background) ?>"
+        };
+
+        // Kirim data ke server untuk disimpan
+        fetch('store-idcard.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (response.success) {
+                    // Setelah berhasil simpan, buka popup print
+                    openPrintWindow(payload);
+                } else {
+                    alert('Gagal menyimpan data.');
+                }
+            })
+            .catch(err => {
+                alert('Terjadi kesalahan: ' + err.message);
+            });
+    }
+
+    function openPrintWindow(data) {
         const win = window.open('', 'popupPrint', 'width=350,height=550,top=100,left=300');
 
         win.document.write(`

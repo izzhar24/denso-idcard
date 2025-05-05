@@ -15,10 +15,10 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-    
+
 
     <link href="<?= asset('vendor/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
-   
+
     <link href="<?= asset('vendor/icofont/icofont.min.css') ?>" rel="stylesheet">
     <link href="<?= asset('vendor/boxicons/css/boxicons.min.css') ?>" rel="stylesheet">
     <link href="<?= asset('vendor/venobox/venobox.css') ?>" rel="stylesheet">
@@ -26,6 +26,7 @@
     <link href="<?= asset('vendor/aos/aos.css') ?>" rel="stylesheet">
 
     <link href="<?= asset('css/style.css') ?>" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     
     <?= renderPush('style') ?>
 </head>
@@ -91,9 +92,9 @@
     <script src="<?= asset('vendor/typed.js/typed.min.js') ?>"></script>
     <script src="<?= asset('vendor/aos/aos.js') ?>"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Template Main JS File -->
     <script src="<?= asset('js/main.js') ?>"></script>
-
     <?= renderPush('scripts') ?>
 </body>
 

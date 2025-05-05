@@ -4,8 +4,9 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\Employee;
+use App\Models\EmployeeCard;
+use App\Models\RequestEmployeeCard;
 use App\Models\Template;
-use Exception;
 use GuzzleHttp\Client;
 
 class HomeController extends Controller
@@ -45,12 +46,7 @@ class HomeController extends Controller
     public function getCard()
     {
         $id = $_POST['id'] ?? null;
-
-        if (!$id) {
-            // Jika ID tidak ditemukan, kembalikan response error
-            echo json_encode(['error' => 'ID tidak ditemukan.']);
-            return;
-        }
+        if (!$id) json(['error' => 'ID tidak ditemukan.']);
 
         // Logika untuk mengambil data berdasarkan ID
         $cardData = $this->fetchCardData($id);
@@ -72,10 +68,25 @@ class HomeController extends Controller
         $input = json_decode(file_get_contents("php://input"), true);
         $employee = $input['employee'] ?? null;
 
+        $employeeCardExist = EmployeeCard::table()->where('employee_id', $employee['id'])->first();
+        $requestEmployeeCardExist = RequestEmployeeCard::table()->where('employee_Card_id', $employeeCardExist['id'])->where('status', '!=','APPROVED')->first();
+
+        $data = [
+            "employee_id" => $employee['id'],
+            "exist" => false,
+        ];
+        if ($employeeCardExist) json([
+            ...$data,
+            "exist" => true,
+            "message" => "Anda sudah print ID Card",
+            "status_request" => $requestEmployeeCardExist ? true: false
+        ]);
         $_SESSION['idcard']['employee'] = $employee;
 
-        header('Content-Type: application/json');
-        return json(["employee" => $employee]);
+        return json([
+            ...$data,
+            "message" => "Set Employee Successfully"
+        ]);
     }
 
     protected function saveImage($base64Image)
@@ -172,5 +183,20 @@ class HomeController extends Controller
             "photo" => $_SESSION['idcard']['photo']['original'],
             "background" => $_SESSION['idcard']['background']
         ]);
+    }
+
+    // Request REPrint Id Card
+    public function requestPrintIdcard()
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $employeeId = $input['id'] ?? null;
+        $reason = $input['reason'] ?? null;
+
+        $employeeCard = EmployeeCard::table()->where('employee_id', $employeeId)->first();
+        RequestEmployeeCard::table()->create([
+            "employee_card_id" => $employeeCard['id'],
+            "reason" => $reason
+        ]);
+        return json(["message" => "Send request print successfully"]);
     }
 }

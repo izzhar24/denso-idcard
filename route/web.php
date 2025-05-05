@@ -13,3 +13,4 @@ $router->post('/get-card', 'HomeController@getCard');
 $router->post('/set-employee', 'HomeController@setEmployee');
 $router->post('/set-photo', 'HomeController@setPhoto');
 $router->post('/set-background', 'HomeController@setBackground');
+$router->post('/request-print-idcard', 'HomeController@requestPrintIdcard');

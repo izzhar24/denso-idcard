@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Core;
 
 use App\Core\Database;
@@ -61,5 +62,44 @@ abstract class Model
     public function first()
     {
         return $this->get()[0] ?? null;
+    }
+
+    public function create(array $data)
+    {
+        $pdo = Database::getPDO();
+        $columns = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_fill(0, count($data), '?'));
+        $values = array_values($data);
+    
+        $sql = "INSERT INTO " . static::getTable() . " ($columns) VALUES ($placeholders)";
+    
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute($values);
+    }
+
+    public function update($id, array $data)
+    {
+        $pdo = Database::getPDO();
+        $setClause = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($data)));
+
+        $sql = "UPDATE " . static::getTable() . " SET $setClause WHERE id = :id";
+        $stmt = $pdo->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->bindValue(':id', $id);
+
+        return $stmt->execute();
+    }
+
+    public function delete($id)
+    {
+        $pdo = Database::getPDO();
+        $sql = "DELETE FROM " . static::getTable() . " WHERE id = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':id', $id);
+
+        return $stmt->execute();
     }
 }
