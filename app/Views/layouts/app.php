@@ -18,7 +18,6 @@
 
 
     <link href="<?= asset('vendor/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
-
     <link href="<?= asset('vendor/icofont/icofont.min.css') ?>" rel="stylesheet">
     <link href="<?= asset('vendor/boxicons/css/boxicons.min.css') ?>" rel="stylesheet">
     <link href="<?= asset('vendor/venobox/venobox.css') ?>" rel="stylesheet">
@@ -39,9 +38,7 @@
 
     <!-- ======= Header ======= -->
     <header id="header" class="d-flex flex-column justify-content-center">
-        <?php
-        include_once("sidebar.php");
-        ?>
+        <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
 
     </header>
@@ -70,6 +67,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Template Main JS File -->
     <script src="<?= asset('js/main.js') ?>"></script>
+    <?php if (!empty($_SESSION['success'])): ?>
+        <script>
+            $(document).ready(function() {
+                toastr.success("<?= $_SESSION['success'] ?>");
+            });
+        </script>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['error'])): ?>
+        <script>
+            $(document).ready(function() {
+                toastr.error("<?= $_SESSION['error'] ?>");
+            });
+        </script>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
     <?= renderPush('scripts') ?>
 </body>
 

@@ -4,53 +4,89 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\User;
+
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::table()->get();
-        return view('users.index', ['users' => $users]);
+        $perPage = 10;
+        $page = $_GET['page'] ?? 1;
+        $offset = ($page - 1) * $perPage;
+
+        $users = User::table()->limit($perPage)->offset($offset)->get();
+        $total = User::table()->count();
+        $totalPages = ceil($total / $perPage);
+        return view('admin.users.index', [
+            'users' => $users,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
+        ]);
     }
 
     public function create()
     {
-        return view('users.create');
+        return view('admin.users.form');
     }
 
     public function store()
     {
-        $data = $_POST;
-        $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        User::table()->create($data);
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $role = $_POST['role'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-        header('Location: /users');
-        exit;
+        if (!$name || !$email || !$role || !$password) {
+            $_SESSION['error'] = 'Semua field wajib diisi';
+            return redirect('/users/create');
+        }
+
+        if (User::exists('email', $email)) {
+            $_SESSION['error'] = 'Email sudah digunakan';
+            return redirect('/users/create');
+        }
+
+        User::table()->create([
+            'name' => $name,
+            'email' => $email,
+            'role' => $role,
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+        ]);
+
+        $_SESSION['success'] = 'Data berhasil disimpan';
+        return redirect('/users');
     }
 
     public function edit($id)
     {
         $user = User::table()->find($id);
-        return view('users.edit', ['user' => $user]);
+        view('admin.users.form', compact('user'));
     }
 
     public function update($id)
     {
-        $data = $_POST;
-        if (!empty($data['password'])) {
-            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        } else {
-            unset($data['password']);
-        }
-        User::table()->update($id, $data);
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $role = $_POST['role'] ?? '';
 
-        header('Location: /users');
-        exit;
+        if (!$name || !$email || !$role) {
+            $_SESSION['error'] = 'Semua field wajib diisi';
+            return redirect("/users/$id/edit");
+        }
+
+        User::table()->where('id', $id)
+        ->update($id,[
+            'name' => $name,
+            'email' => $email,
+            'role' => $role
+        ]);
+        $_SESSION['success'] = 'Data berhasil diubah';
+        return redirect('/users');
     }
 
     public function destroy($id)
     {
         User::table()->delete($id);
-        header('Location: /users');
-        exit;
+        $_SESSION['success'] = 'Data berhasil dihapus';
+        redirect('/users');
     }
 }

@@ -12,6 +12,8 @@ abstract class Model
     protected $wheres = [];
     protected $bindings = [];
     protected $orders = [];
+    protected $limit;
+    protected $offset;
 
     public static function table()
     {
@@ -67,6 +69,24 @@ abstract class Model
 
         return $sql;
     }
+    public function limit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function offset($offset)
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
+    public function count()
+    {
+        $pdo = Database::getPDO();
+        $sql = "SELECT COUNT(*) as count FROM " . static::getTable();
+        return $pdo->query($sql)->fetch()['count'];
+    }
 
     public function get()
     {
@@ -104,6 +124,15 @@ abstract class Model
         $stmt = $pdo->prepare("SELECT * FROM " . static::getTable() . " WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function exists($column, $value)
+    {
+        $table = static::$table; // Pastikan properti static $table didefinisikan di masing-masing model
+        $pdo = Database::getPDO();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM {$table} WHERE {$column} = :value");
+        $stmt->execute(['value' => $value]);
+        return $stmt->fetchColumn() > 0;
     }
 
     public function create(array $data)

@@ -43,18 +43,28 @@ class Router
     public function dispatch($requestUri, $requestMethod)
     {
         foreach ($this->routes as $route) {
-            if ($route['uri'] === $requestUri && $route['method'] === $requestMethod) {
-                $this->runMiddleware($route['middleware']);
+            if ($route['method'] !== $requestMethod) {
+                continue;
+            }
 
-                // Tangani jika route menggunakan Closure
+            // Buat regex dari route pattern (contoh: /users/{id}/edit jadi /users/([^/]+)/edit)
+            $pattern = preg_replace('#\{[^/]+\}#', '([^/]+)', $route['uri']);
+            $pattern = '#^' . $pattern . '$#';
+
+            if (preg_match($pattern, $requestUri, $matches)) {
+                array_shift($matches); // Buang full match pertama
+
+                $this->runMiddleware($route['middleware'] ?? []);
+
+                // Jika Closure
                 if (is_callable($route['action'])) {
-                    return call_user_func($route['action']);
+                    return call_user_func_array($route['action'], $matches);
                 }
 
-                // Tangani jika route menggunakan [Controller::class, 'method']
+                // Jika [Controller::class, 'method']
                 [$controllerClass, $method] = $route['action'];
                 $controller = new $controllerClass;
-                return $controller->$method();
+                return call_user_func_array([$controller, $method], $matches);
             }
         }
 
