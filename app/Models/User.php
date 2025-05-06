@@ -3,21 +3,11 @@
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\Model;
 use PDO;
 
-class User
+class User extends Model
 {
-    private $db;
-
-    public function __construct()
-    {
-        $this->db = Database::getInstance()->getConnection();
-    }
-
-    public function findByUsername($username)
-    {
-        $stmt = $this->db->prepare('SELECT * FROM users WHERE username = :username');
-        $stmt->execute(['username' => $username]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    protected static $table = 'users';
+    protected static $primaryKey = 'id';
 }

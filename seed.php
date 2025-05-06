@@ -6,6 +6,23 @@ loadEnv();
 
 $pdo = getPDO();
 
+$users = [
+    ['admin','admin@mail.com', 'admin','admin'],
+    ['user','user@mail.com', 'user','user']
+];
+
+$stmt = $pdo->prepare("
+    INSERT INTO users (name, email, password, role) 
+    VALUES (?, ?, ?, ?)
+");
+
+foreach ($users as $user) {
+    $user[2] = password_hash($user[2], PASSWORD_BCRYPT);
+    $stmt->execute($user);
+}
+echo "✅ Seeded Users\n";
+
+
 // Seed Employees
 $employees = [
     ['DENSO INDONESIA', 'BEKASI', '5402', 'TQM', '2090761', 'AJI WIBOWO', 'TETAP'],

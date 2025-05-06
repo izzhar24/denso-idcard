@@ -1,24 +1,29 @@
 <?php
-function view($name, $data = [])
-{
-    extract($data);
+if (!function_exists('view')) {
+    function view($name, $data = [], $layout = 'app')
+    {
+        if (!is_array($data)) {
+            throw new InvalidArgumentException('Parameter $data harus berupa array.');
+        }
 
-    // Ambil file view
-    $viewFile = __DIR__ . '/../views/' . str_replace('.', '/', $name) . '.php';
-    if (!file_exists($viewFile)) {
-        throw new Exception("View [$name] not found.");
-    }
+        $viewPath = __DIR__ . '/../Views/' . str_replace('.', '/', $name) . '.php';
+        $layoutPath = __DIR__ . '/../Views/layouts/' . str_replace('.', '/', $layout) . '.php';
 
-    ob_start();
-    require $viewFile;
-    $content = ob_get_clean();
+        if (!file_exists($viewPath)) {
+            die("View file not found: $viewPath");
+        }
 
-    // Load layout utama
-    $layoutFile = __DIR__ . '/../views/layouts/app.php';
-    if (file_exists($layoutFile)) {
-        require $layoutFile;
-    } else {
-        echo $content; // Jika tidak ada layout, tampilkan langsung kontennya
+        if (!file_exists($layoutPath)) {
+            die("Layout file not found: $layoutPath");
+        }
+
+        extract($data);
+
+        ob_start();
+        require $viewPath;
+        $content = ob_get_clean();
+
+        require $layoutPath;
     }
 }
 
@@ -39,19 +44,22 @@ if (!function_exists('asset')) {
 $__pushStacks = [];
 $__currentPushSection = null;
 
-function startPush($section) {
+function startPush($section)
+{
     global $__currentPushSection;
     ob_start();
     $__currentPushSection = $section;
 }
 
-function endPush() {
+function endPush()
+{
     global $__pushStacks, $__currentPushSection;
     $content = ob_get_clean();
     $__pushStacks[$__currentPushSection][] = $content;
 }
 
-function renderPush($section) {
+function renderPush($section)
+{
     global $__pushStacks;
     if (!empty($__pushStacks[$section])) {
         echo implode("\n", $__pushStacks[$section]);

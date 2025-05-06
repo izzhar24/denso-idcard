@@ -7,41 +7,43 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+
     public function showLogin()
     {
-        $this->view('login');
+        $this->view('auth.login', [], 'auth');
     }
 
     public function login()
     {
-        $username = $_POST['username'] ?? '';
+        $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        $user = (new User())->findByUsername($username);
+        $user = User::table()->where('email', $email)->first();
 
-        if ($user && password_verify($password, $user['password'])) {
-            session_start();
-            $_SESSION['user'] = $user;
-            $this->redirect('/dashboard');
-        } else {
-            $this->view('login', ['error' => 'Invalid username or password']);
+        if (!$user || !password_verify($password, $user['password'])) {
+            $_SESSION['error'] = 'Email atau password salah.';
+            return redirect('/login');
         }
+
+        $_SESSION['user'] = [
+            'id' => $user['id'],
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'role' => $user['role']
+        ];
+        $_SESSION['error'] = null;
+
+        return redirect('/admin');
     }
 
-    public function dashboard()
+    public function admin()
     {
-        session_start();
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
-
-        $this->view('dashboard', ['user' => $_SESSION['user']]);
+        $this->view('admin.index', ['user' => $_SESSION['user']], 'app');
     }
 
     public function logout()
     {
-        session_start();
         session_destroy();
-        $this->redirect('/login');
+        redirect('/login');
     }
 }

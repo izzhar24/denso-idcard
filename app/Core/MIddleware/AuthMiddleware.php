@@ -4,12 +4,14 @@ namespace App\Core\Middleware;
 
 class AuthMiddleware
 {
-    public static function handle()
+    public function handle()
     {
-        // Cek apakah session user ada (misal login)
         if (!isset($_SESSION['user'])) {
-            // Jika belum login, redirect ke halaman login
-            redirect('/login');
+            error_log('User not authenticated'); // log ke error log
+            header('Location: /login');
+            exit;
+        } else {
+            error_log('User authenticated: ' . $_SESSION['user']['email']);
         }
     }
 }

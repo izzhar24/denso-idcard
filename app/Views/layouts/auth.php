@@ -32,21 +32,6 @@
 </head>
 
 <body>
-
-    <!-- ======= Mobile nav toggle button ======= -->
-    <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
-
-
-    <!-- ======= Header ======= -->
-    <header id="header" class="d-flex flex-column justify-content-center">
-        <?php
-        include_once("sidebar.php");
-        ?>
-
-
-    </header>
-    <!-- End Header -->
-
     <main>
         <?= $content ?>
     </main>
@@ -72,5 +57,3 @@
     <script src="<?= asset('js/main.js') ?>"></script>
     <?= renderPush('scripts') ?>
 </body>
-
-</html>

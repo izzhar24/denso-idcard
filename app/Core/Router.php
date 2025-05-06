@@ -5,59 +5,72 @@ namespace App\Core;
 class Router
 {
     protected $routes = [];
-    protected $middlewares = [];
-
-    public function get($uri, $action, $middleware = null)
+    protected $middlewareGroups = [];
+    protected $currentMiddleware = [];
+    public function get($uri, $action)
     {
-        $this->routes['GET'][$uri] = $action;
-        if ($middleware) {
-            $this->middlewares['GET'][$uri] = $middleware;
-        }
+        $this->addRoute('GET', $uri, $action);
     }
 
-    public function post($uri, $action, $middleware = null)
+    public function post($uri, $action)
     {
-        $this->routes['POST'][$uri] = $action;
-        if ($middleware) {
-            $this->middlewares['POST'][$uri] = $middleware;
-        }
+        $this->addRoute('POST', $uri, $action);
     }
 
-    public function dispatch()
+    protected function addRoute($method, $uri, $action)
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $uri = '/' . trim(str_replace(BASE_PATH, '', $uri), '/');
+        $this->routes[] = [
+            'method' => $method,
+            'uri' => $uri,
+            'action' => $action,
+            'middleware' => $this->currentMiddleware
+        ];
+    }
 
-        $method = $_SERVER['REQUEST_METHOD'];
+    public function middleware($middleware)
+    {
+        $this->currentMiddleware = (array) $middleware;
 
-        if (isset($this->routes[$method][$uri])) {
-            // Cek apakah ada middleware yang perlu dijalankan
-            if (isset($this->middlewares[$method][$uri])) {
-                $middleware = $this->middlewares[$method][$uri];
-                $middleware::handle(); // Jalankan middleware
+        return $this;
+    }
+
+    public function group(callable $callback)
+    {
+        $callback($this);
+        $this->currentMiddleware = [];
+    }
+
+    public function dispatch($requestUri, $requestMethod)
+    {
+        foreach ($this->routes as $route) {
+            if ($route['uri'] === $requestUri && $route['method'] === $requestMethod) {
+                $this->runMiddleware($route['middleware']);
+
+                // Tangani jika route menggunakan Closure
+                if (is_callable($route['action'])) {
+                    return call_user_func($route['action']);
+                }
+
+                // Tangani jika route menggunakan [Controller::class, 'method']
+                [$controllerClass, $method] = $route['action'];
+                $controller = new $controllerClass;
+                return $controller->$method();
             }
-
-            $this->callAction($this->routes[$method][$uri]);
-        } else {
-            http_response_code(404);
-            echo "404 - Not Found (URI: {$uri})";
         }
+
+        http_response_code(404);
+        echo "404 Not Found";
     }
 
-    protected function callAction($action)
+    protected function runMiddleware(array $middlewareList)
     {
-        if (is_callable($action)) {
-            call_user_func($action);
-        } else {
-            list($controller, $method) = explode('@', $action);
-            $controller = "App\\Controllers\\{$controller}";
-            $controllerObject = new $controller;
-            call_user_func([$controllerObject, $method]);
-        }
-    }
+        $middlewareMap = require __DIR__ . '/../Core/kernel.php';
 
-    public function run()
-    {
-        $this->dispatch();
+        foreach ($middlewareList as $middlewareName) {
+            if (isset($middlewareMap[$middlewareName])) {
+                $middlewareClass = $middlewareMap[$middlewareName];
+                (new $middlewareClass)->handle();
+            }
+        }
     }
 }
