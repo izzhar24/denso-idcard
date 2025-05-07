@@ -7,7 +7,6 @@ use App\Models\Employee;
 use App\Models\EmployeeCard;
 use App\Models\RequestEmployeeCard;
 use App\Models\Template;
-use GuzzleHttp\Client;
 
 class HomeController extends Controller
 {
@@ -124,55 +123,8 @@ class HomeController extends Controller
         return json([
             "message" => "Set Photo Successfully"
         ]);
-        // $this->removeBackground();
     }
 
-    protected function removeBackground()
-    {
-        $photo = $_SESSION['idcard']['photo']['original'];
-        $url = $_ENV['REMOVE_BG_URL'] ?? null;
-        $key = $_ENV['REMOVE_BG_KEY'] ?? null;
-
-        if (!$url || !$key) {
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'Remove.bg API URL or key is not set']);
-            return;
-        }
-        // Prosesnya dijadikan async
-        $client = new Client();
-        $promise = $client->postAsync($url, [
-            'multipart' => [
-                [
-                    'name'     => 'image_file',
-                    'contents' => fopen($photo, 'r')
-                ],
-                [
-                    'name'     => 'size',
-                    'contents' => 'auto'
-                ]
-            ],
-            'headers' => [
-                'X-Api-Key' => $key
-            ]
-        ]);
-
-        $promise->then(
-            function ($res) {
-                $fileNamePath = 'employee/remove-bg/' . $_SESSION['idcard']['employee']['npk'] . ".png";
-                $fp = fopen($fileNamePath, "wb");
-                fwrite($fp, $res->getBody());
-                fclose($fp);
-
-                $_SESSION['idcard']['photo']['remove-bg'] = $fileNamePath;
-                return json(["photo" => $fileNamePath]);
-            },
-            function ($e) {
-                return json(['error' => 'Failed to process image: ' . $e->getMessage()]);
-            }
-        );
-
-        $promise->wait();
-    }
 
     // Set Background
     public function setBackground()
