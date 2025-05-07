@@ -47,7 +47,7 @@ $adminMenu = [
     [
         "title" => "Request Print ID Card",
         "icon" => "bx bx-book-content",
-        "url" => "/id-card-request"
+        "url" => "/employee-request-cards"
     ],
     [
         "title" => "Keluar",

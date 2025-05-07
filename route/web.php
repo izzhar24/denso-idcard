@@ -2,6 +2,7 @@
 
 use App\Controllers\AuthController;
 use App\Controllers\EmployeeController;
+use App\Controllers\EmployeeRequestCardController;
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
 
@@ -40,12 +41,10 @@ $router->middleware('auth')->group(function () use ($router) {
     $router->post('/employees/{id}/update', [EmployeeController::class, 'update']);
     $router->post('/employees/{id}/delete', [EmployeeController::class, 'destroy']);
 
-    // $router->get('/employee-request-cards', [EmployeeRequestCardController::class, 'index']);
-    // $router->get('/employee-request-cards/create', [EmployeeRequestCardController::class, 'create']);
-    // $router->post('/employee-request-cards', [EmployeeRequestCardController::class, 'store']);
-    // $router->get('/employee-request-cards/{id}/edit', [EmployeeRequestCardController::class, 'edit']);
-    // $router->post('/employee-request-cards/{id}/update', [EmployeeRequestCardController::class, 'update']);
-    // $router->post('/employee-request-cards/{id}/delete', [EmployeeRequestCardController::class, 'destroy']);
+    $router->get('/employee-request-cards', [EmployeeRequestCardController::class, 'index']);
+    $router->post('/employee-request-cards/{id}/reject', [EmployeeRequestCardController::class, 'reject']);
+    $router->post('/employee-request-cards/{id}/approve', [EmployeeRequestCardController::class, 'approve']);
+    $router->get('/employee-request-cards/{id}/print', [EmployeeRequestCardController::class, 'print']);
 });
 
 $router->get('/unauthorized', function () {

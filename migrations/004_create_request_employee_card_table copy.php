@@ -7,8 +7,10 @@ CREATE TABLE IF NOT EXISTS request_employee_card (
     employee_card_id int,
     reason TEXT,
     status ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
+    admin_id INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL,
     FOREIGN KEY (employee_card_id) REFERENCES employee_card(id) ON DELETE CASCADE
 );
 ";

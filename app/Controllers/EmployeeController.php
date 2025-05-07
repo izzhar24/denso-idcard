@@ -41,7 +41,7 @@ class EmployeeController extends Controller
 
         if (!$npk || !$name || !$company || !$plant || !$kd_bu || !$nm_bu || !$status_karyawan) {
             $_SESSION['error'] = 'Semua field wajib diisi';
-            return redirect('/employees/create');
+            redirect('/employees/create');
         }
 
         if (Employee::exists('npk', $npk)) {

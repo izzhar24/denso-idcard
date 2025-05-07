@@ -14,6 +14,8 @@ abstract class Model
     protected $orders = [];
     protected $limit;
     protected $offset;
+    protected $with = [];
+
 
     public static function table()
     {
@@ -23,6 +25,11 @@ abstract class Model
     public static function getTable()
     {
         return static::$table;
+    }
+
+    public function getPrimaryKey()
+    {
+        return static::$primaryKey ?? 'id';
     }
 
     public function select(array $columns)
@@ -42,6 +49,14 @@ abstract class Model
         return $this;
     }
 
+    public static function exists($column, $value)
+    {
+        $table = static::$table; // Pastikan properti static $table didefinisikan di masing-masing model
+        $pdo = Database::getPDO();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM {$table} WHERE {$column} = :value");
+        $stmt->execute(['value' => $value]);
+        return $stmt->fetchColumn() > 0;
+    }
     public function orderBy($column, $direction = 'asc')
     {
         $this->orders[] = [$column, strtoupper($direction)];
@@ -89,6 +104,86 @@ abstract class Model
         return $pdo->query($sql)->fetch()['count'];
     }
 
+    public function with($relations)
+    {
+        $relations = is_array($relations) ? $relations : [$relations];
+        foreach ($relations as $relation) {
+            $this->parseWithRelation($relation, $this->with);
+        }
+        return $this;
+    }
+
+    protected function parseWithRelation($relation, &$with)
+    {
+        if (str_contains($relation, '.')) {
+            $parts = explode('.', $relation);
+            $first = array_shift($parts);
+            if (!isset($with[$first])) {
+                $with[$first] = [];
+            }
+            $this->parseWithRelation(implode('.', $parts), $with[$first]);
+        } else {
+            if (!isset($with[$relation])) {
+                $with[$relation] = [];
+            }
+        }
+    }
+    protected function loadRelation(&$row, $relation)
+    {
+        if (strpos($relation, '.') !== false) {
+            [$first, $nested] = explode('.', $relation, 2);
+
+            if (method_exists($this, $first)) {
+                $related = $this->$first->call($row); // atau $this->$first() jika tidak butuh argumen
+                if ($related) {
+                    // Buat instance model dari class terkait
+                    $relatedModel = new ($related::class);
+                    $relatedWith = [$nested];
+                    $relatedRow = $relatedModel->with($relatedWith)->where('id', $related->id)->first(); // atau langsung fetch by ID
+                    $row->$first = $relatedRow;
+                }
+            }
+        } else {
+            if (method_exists($this, $relation)) {
+                $row->$relation = $this->$relation($row);
+            }
+        }
+    }
+
+    public function has($relation)
+    {
+        $this->with[] = $relation;
+        return $this;
+    }
+    protected function belongsTo($relatedClass, $foreignKey, $ownerKey = 'id')
+    {
+        $foreignValue = $this->{$foreignKey} ?? null;
+        if (!$foreignValue) return null;
+
+        return $relatedClass::table()
+            ->where($ownerKey, $foreignValue)
+            ->first();
+    }
+
+    protected function hasOne($relatedClass, $foreignKey, $localKey = 'id')
+    {
+        $localValue = $this->$localKey ?? null;
+        if (!$localValue) return null;
+
+        return $relatedClass::table()
+            ->where($foreignKey, $localValue)
+            ->first();
+    }
+
+    protected function hasMany($relatedClass, $foreignKey, $localKey = 'id')
+    {
+        $localValue = $this->$localKey ?? null;
+        if (!$localValue) return [];
+
+        return $relatedClass::table()
+            ->where($foreignKey, $localValue)
+            ->get();
+    }
     public function get()
     {
         $pdo = Database::getPDO();
@@ -114,8 +209,25 @@ abstract class Model
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute($bindings);
-        return $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        // Eager load relations
+        if (!empty($this->with)) {
+            foreach ($results as &$row) {
+                foreach ($this->with as $relation => $nested) {
+                    if (is_int($relation)) {
+                        $relation = $nested;
+                        $nested = [];
+                    }
+                    $this->loadRelation($row, [$relation => $nested]);
+                }
+            }
+        }
+
+
+        return $results;
     }
+
 
     public function first()
     {
