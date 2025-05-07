@@ -45,7 +45,7 @@ php migrate.php --refresh
 
 ### Seeder dummy data
 ```bash
-php seed
+php seeder.php
 ```
 
 ### Running application

@@ -24,4 +24,5 @@ $res = $client->post('https://api.remove.bg/v1.0/removebg', [
 $fp = fopen("no-bg.png", "wb");
 fwrite($fp, $res->getBody());
 fclose($fp);
+fclose($fp);
 ?>
