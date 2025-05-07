@@ -112,19 +112,12 @@
         <div id="zoomModal" style="display: none;" onclick="closeZoom()">
             <img id="zoomImage" src="" />
         </div>
-        
-        <?php
-        echo '<pre>';
-        print_r($_SESSION['idcard']);
-        echo '</pre>';
-        ?>
 
     </div>
 </section>
 
 
 <?php startPush('scripts'); ?>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script> -->
 <script>
     const video = document.getElementById('video');
     const snap = document.getElementById('snap');

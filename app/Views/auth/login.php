@@ -1,6 +1,6 @@
 <section id="hero" class="d-flex flex-column justify-content-center">
     <div class="container" data-aos="zoom-in" data-aos-delay="100">
-        <div class="container mt-5" style="max-width: 400px;">
+        <div class="container mt-5 card px-4 py-4 shadow-lg" style="max-width: 400px;">
             <h3 class="text-center mb-4">Login</h3>
             <form action="/login" method="POST">
                 <div class="form-group">
@@ -24,6 +24,7 @@
                         required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
+                <a href="/" class="text-xs">Back to Home Page</a>
             </form>
         </div>
     </div>

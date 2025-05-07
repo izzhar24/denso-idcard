@@ -50,25 +50,28 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <?php if ($requestEmployeeCard['status'] == 'PENDING') { ?>
-                                                <button
-                                                    class="btn btn-primary btn-sm" title="Approve & Print Out"
-                                                    data-toggle="modal"
-                                                    data-target="#confirmPrintModal"
-                                                    data-id="<?= $requestEmployeeCard['id'] ?>"
-                                                    data-npk="<?= $requestEmployeeCard['employee']['npk'] ?>"
-                                                    data-name="<?= $requestEmployeeCard['employee']['name'] ?>"
-                                                    data-photo="<?= asset($requestEmployeeCard['employee_card']['selected_photo_path']) ?>"
-                                                    data-bg="<?= asset($requestEmployeeCard['template']['image_path']) ?>">
-                                                    <i class="bx bx-printer"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-danger" title="Reject"
-                                                    data-toggle="modal"
-                                                    data-target="#confirmRejectModal"
-                                                    onclick="setDeleteUrl('/employee-request-cards/<?= $requestEmployeeCard['id'] ?>/reject')">
-                                                    <i class="bx bx-x"></i>
-                                                </button>
-                                            <?php } ?>
+                                            <?php
+                                            if (($_SESSION['user']['role']) == "admin") {
+                                                if ($requestEmployeeCard['status'] == 'PENDING') { ?>
+                                                    <button
+                                                        class="btn btn-primary btn-sm" title="Approve & Print Out"
+                                                        data-toggle="modal"
+                                                        data-target="#confirmPrintModal"
+                                                        data-id="<?= $requestEmployeeCard['id'] ?>"
+                                                        data-npk="<?= $requestEmployeeCard['employee']['npk'] ?>"
+                                                        data-name="<?= $requestEmployeeCard['employee']['name'] ?>"
+                                                        data-photo="<?= asset($requestEmployeeCard['employee_card']['selected_photo_path']) ?>"
+                                                        data-bg="<?= asset($requestEmployeeCard['template']['image_path']) ?>">
+                                                        <i class="bx bx-printer"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger" title="Reject"
+                                                        data-toggle="modal"
+                                                        data-target="#confirmRejectModal"
+                                                        onclick="setDeleteUrl('/employee-request-cards/<?= $requestEmployeeCard['id'] ?>/reject')">
+                                                        <i class="bx bx-x"></i>
+                                                    </button>
+                                            <?php }
+                                            } ?>
                                         </td>
                                     </tr>
                             <?php }
@@ -76,9 +79,6 @@
                         </tbody>
                     </table>
                 </div>
-                <pre>
-                    <?php var_dump($_SESSION['user']['id']) ?>
-                </pre>
                 <?php include __DIR__ . '/../../partials/pagination.php'; ?>
             </div>
         </div>

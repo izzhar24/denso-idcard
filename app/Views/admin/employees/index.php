@@ -4,7 +4,9 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-4">
                     <h3>Employee</h3>
+                    <?php  if(($_SESSION['user']['role'] ) == "admin") { ?>
                     <a href="/employees/create" class="btn btn-sm btn-primary">Create Employee</a>
+                    <?php } ?>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -38,6 +40,7 @@
                                         <td><?= $employee['nm_bu'] ?></td>
                                         <td><?= $employee['status_karyawan'] ?></td>
                                         <td>
+                                        <?php  if(($_SESSION['user']['role'] ) == "admin") { ?>
                                             <a href="/employees/<?= $employee['id'] ?>/edit" class="btn btn-warning btn-sm">
                                                 <i class="bx bx-edit"></i>
                                             </a>
@@ -47,6 +50,7 @@
                                                 onclick="setDeleteUrl('/employees/<?= $employee['id'] ?>/delete')">
                                                 <i class="bx bx-trash"></i>
                                             </a>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                             <?php }
