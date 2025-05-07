@@ -69,6 +69,7 @@ abstract class Model
 
         return $sql;
     }
+
     public function limit($limit)
     {
         $this->limit = $limit;
@@ -91,25 +92,29 @@ abstract class Model
     public function get()
     {
         $pdo = Database::getPDO();
-        $sql = $this->buildSql();
+        $sql = "SELECT " . implode(', ', $this->selects) . " FROM " . static::getTable();
+
+        $bindings = [];
+
+        if (!empty($this->wheres)) {
+            $whereSql = array_map(function ($where) {
+                return "{$where[0]} {$where[1]} ?";
+            }, $this->wheres);
+            $sql .= " WHERE " . implode(' AND ', $whereSql);
+            $bindings = array_map(fn($w) => $w[2], $this->wheres);
+        }
+
+        if ($this->limit !== null) {
+            $sql .= " LIMIT " . intval($this->limit);
+        }
+
+        if ($this->offset !== null) {
+            $sql .= " OFFSET " . intval($this->offset);
+        }
 
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($this->bindings);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function paginate($perPage = 10, $page = 1)
-    {
-        $offset = ($page - 1) * $perPage;
-        $sql = $this->buildSql();
-        $sql .= " LIMIT $perPage OFFSET $offset";
-
-        $pdo = Database::getPDO();
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($this->bindings);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute($bindings);
+        return $stmt->fetchAll();
     }
 
     public function first()
@@ -124,15 +129,6 @@ abstract class Model
         $stmt = $pdo->prepare("SELECT * FROM " . static::getTable() . " WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public static function exists($column, $value)
-    {
-        $table = static::$table; // Pastikan properti static $table didefinisikan di masing-masing model
-        $pdo = Database::getPDO();
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM {$table} WHERE {$column} = :value");
-        $stmt->execute(['value' => $value]);
-        return $stmt->fetchColumn() > 0;
     }
 
     public function create(array $data)

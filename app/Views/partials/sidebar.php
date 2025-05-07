@@ -42,7 +42,7 @@ $adminMenu = [
     [
         "title" => "Karyawan",
         "icon" => "bx bx-list-ul",
-        "url" => "/employee"
+        "url" => "/employees"
     ],
     [
         "title" => "Request Print ID Card",

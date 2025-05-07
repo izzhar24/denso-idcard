@@ -7,8 +7,8 @@ loadEnv();
 $pdo = getPDO();
 
 $users = [
-    ['admin','admin@mail.com', 'admin','admin'],
-    ['user','user@mail.com', 'user','user']
+    ['admin', 'admin@mail.com', 'admin', 'admin'],
+    ['user', 'user@mail.com', 'user', 'user']
 ];
 
 $stmt = $pdo->prepare("
@@ -30,6 +30,16 @@ $employees = [
     ['DENSO INDONESIA', 'BEKASI', '3222', 'HR-BEKASI', '2160472', 'HANA SARASWATI', 'TETAP'],
     ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160817', 'AGUS ALY', 'TETAP'],
     ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131366', 'RENO WIDODO', 'TETAP'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'TQM', '2180021', 'TIA RAHMAWATI', 'TETAP'],
+    ['HAMADEN INDONESIA', 'BEKASI', '3222', 'TQM', '2170021', 'SUGIYARTO', 'KONTRAK'],
+    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160821', 'INDRA WIJAYA', 'TETAP'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131321', 'ARDIANTO', 'TETAP'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131331', 'DODY DWI PRASETYO', 'TETAP'],
+    ['DENSO INDONESIA', 'BEKASI', '5402', 'TQM', '2090821', 'AGUS WAHYU', 'TETAP'],
+    ['HAMADEN INDONESIA', 'BEKASI', '5402', 'TQM', '2110821', 'LINDA SARI', 'KONTRAK'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'TQM', '2180121', 'RIZAL RACHMAN', 'TETAP'],
+    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160822', 'RIZA EKA PRASETYO', 'TETAP'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131322', 'RICO WIBISANA', 'TETAP']
 ];
 
 $stmt = $pdo->prepare("

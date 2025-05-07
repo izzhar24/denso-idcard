@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AuthController;
+use App\Controllers\EmployeeController;
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
 
@@ -32,12 +33,12 @@ $router->middleware('auth')->group(function () use ($router) {
     $router->post('/users/{id}/update', [UserController::class, 'update']);
     $router->post('/users/{id}/delete', [UserController::class, 'destroy']);
 
-    // $router->get('/employees', [EmployeeController::class, 'index']);
-    // $router->get('/employees/create', [EmployeeController::class, 'create']);
-    // $router->post('/employees', [EmployeeController::class, 'store']);
-    // $router->get('/employees/{id}/edit', [EmployeeController::class, 'edit']);
-    // $router->post('/employees/{id}/update', [EmployeeController::class, 'update']);
-    // $router->post('/employees/{id}/delete', [EmployeeController::class, 'destroy']);
+    $router->get('/employees', [EmployeeController::class, 'index']);
+    $router->get('/employees/create', [EmployeeController::class, 'create']);
+    $router->post('/employees', [EmployeeController::class, 'store']);
+    $router->get('/employees/{id}/edit', [EmployeeController::class, 'edit']);
+    $router->post('/employees/{id}/update', [EmployeeController::class, 'update']);
+    $router->post('/employees/{id}/delete', [EmployeeController::class, 'destroy']);
 
     // $router->get('/employee-request-cards', [EmployeeRequestCardController::class, 'index']);
     // $router->get('/employee-request-cards/create', [EmployeeRequestCardController::class, 'create']);
