@@ -43,8 +43,7 @@ $router->middleware('auth')->group(function () use ($router) {
 
     $router->get('/employee-request-cards', [EmployeeRequestCardController::class, 'index']);
     $router->post('/employee-request-cards/{id}/reject', [EmployeeRequestCardController::class, 'reject']);
-    $router->post('/employee-request-cards/{id}/approve', [EmployeeRequestCardController::class, 'approve']);
-    $router->get('/employee-request-cards/{id}/print', [EmployeeRequestCardController::class, 'print']);
+    $router->post('/employee-request-cards/approve', [EmployeeRequestCardController::class, 'approve']);
 });
 
 $router->get('/unauthorized', function () {

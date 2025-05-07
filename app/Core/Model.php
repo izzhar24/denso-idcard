@@ -209,7 +209,7 @@ abstract class Model
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute($bindings);
-        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $results = $stmt->fetchAll();
 
         // Eager load relations
         if (!empty($this->with)) {
@@ -228,7 +228,19 @@ abstract class Model
         return $results;
     }
 
+    public function paginate($perPage = 10, $page = 1)
+    {
+        $offset = ($page - 1) * $perPage;
+        $sql = $this->buildSql();
+        $sql .= " LIMIT $perPage OFFSET $offset";
 
+        $pdo = Database::getPDO();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($this->bindings);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     public function first()
     {
         $result = $this->get();

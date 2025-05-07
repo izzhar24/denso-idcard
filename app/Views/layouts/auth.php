@@ -55,5 +55,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <!-- Template Main JS File -->
     <script src="<?= asset('js/main.js') ?>"></script>
+    <?php if (!empty($_SESSION['success'])): ?>
+        <script>
+            $(document).ready(function() {
+                toastr.success("<?= $_SESSION['success'] ?>");
+            });
+        </script>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['error'])): ?>
+        <script>
+            $(document).ready(function() {
+                toastr.error("<?= $_SESSION['error'] ?>");
+            });
+        </script>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
     <?= renderPush('scripts') ?>
 </body>

@@ -58,8 +58,8 @@ $stmtReq = $pdo->prepare("
     VALUES (?)
 ");
 
-$stmtReq->execute(['card-templates/template-card-1.png']);
-$stmtReq->execute(['card-templates/template-card-2.png']);
+$stmtReq->execute(['card-templates/template1.png']);
+$stmtReq->execute(['card-templates/template2.png']);
 
 echo "✅ Seeded templates \n";
 

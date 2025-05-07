@@ -2,14 +2,6 @@
     <div class="container" data-aos="zoom-in" data-aos-delay="100">
         <div class="container mt-5" style="max-width: 400px;">
             <h3 class="text-center mb-4">Login</h3>
-            <?php if (!empty($_SESSION['error'])) : ?>
-                <div class="alert alert-danger" role="alert">
-                    <?= $_SESSION['error'] ?>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            <?php endif; ?>
             <form action="/login" method="POST">
                 <div class="form-group">
                     <label for="email">Email address</label>

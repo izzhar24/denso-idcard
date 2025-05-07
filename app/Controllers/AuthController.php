@@ -20,11 +20,11 @@ class AuthController extends Controller
 
         $user = User::table()->where('email', $email)->first();
 
+        // var_dump($user->password, password_verify($password, $user->password));
         if (!$user || !password_verify($password, $user['password'])) {
             $_SESSION['error'] = 'Email atau password salah.';
             return redirect('/login');
         }
-
         $_SESSION['user'] = [
             'id' => $user['id'],
             'name' => $user['name'],

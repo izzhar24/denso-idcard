@@ -4,7 +4,9 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\Employee;
+use App\Models\EmployeeCard;
 use App\Models\RequestEmployeeCard;
+use App\Models\Template;
 
 class EmployeeRequestCardController extends Controller
 {
@@ -15,10 +17,16 @@ class EmployeeRequestCardController extends Controller
         $offset = ($page - 1) * $perPage;
 
         $requestEmployeeCards = RequestEmployeeCard::table()->limit($perPage)->offset($offset)
-            ->with('employee_card.employee')
             ->get();
-        var_dump($requestEmployeeCards[0]);
-        // $employeeCard = $requestEmployeeCards->employee_card();
+
+        foreach ($requestEmployeeCards as $key => $requestEmployeeCard) {
+            $employeeCard = EmployeeCard::table()
+                ->where('id', $requestEmployeeCard['employee_card_id'])
+                ->first();
+            $requestEmployeeCards[$key]['employee'] = Employee::table()->where('id', $employeeCard['employee_id'])->first();
+            $requestEmployeeCards[$key]['template'] = Template::table()->where('id', $employeeCard['template_id'])->first();
+            $requestEmployeeCards[$key]['employee_card']  = $employeeCard;
+        }
         $total = RequestEmployeeCard::table()->count();
         $totalPages = ceil($total / $perPage);
         return view('admin.request-employee-cards.index', [
@@ -28,20 +36,22 @@ class EmployeeRequestCardController extends Controller
             'totalPages' => $totalPages
         ]);
     }
-    public function approve($id)
+    public function approve()
     {
-        RequestEmployeeCard::table()->where('id', $id)
+        $id = $_POST['id'] ?? null;
+        $data = RequestEmployeeCard::table()
             ->update($id, [
+                'admin_id' => $_SESSION['user']['id'],
                 'status' => 'APPROVED'
             ]);
-        $_SESSION['success'] = 'Data berhasil di approve dan di cetak';
-        redirect('/employee-request-cards');
+        return json(['message' => 'Data berhasil di approve dan di cetak', "data"=> $data]);
     }
 
     public function reject($id)
     {
-        RequestEmployeeCard::table()->where('id', $id)
+        RequestEmployeeCard::table()
             ->update($id, [
+                'admin_id' => $_SESSION['user']['id'],
                 'status' => 'REJECTED'
             ]);
         $_SESSION['success'] = 'Data berhasil di reject';
