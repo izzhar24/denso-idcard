@@ -4,7 +4,7 @@
         <div id="list-background" class="d-flex flex-row justify-content-center align-items-center">
             <?php
             foreach ($templates as $template) {
-                echo '<img src="' . asset($template['image_path']) . '" alt="img-template" class="img-template" >';
+                echo '<img src="' . asset($template['image_path']) . '" alt="img-template" class="img-template" data-id="'.$template['id'].'" >';
             }
             ?>
         </div>
@@ -67,12 +67,14 @@
 <?php startPush('scripts'); ?>
 <script>
     let selectedImageSrc = null;
+    let selectedImageId = null;
     const nextBtn = document.getElementById('btnNext');
     document.addEventListener('click', function(e) {
         if (e.target.matches('#list-background img.img-template')) {
             document.querySelectorAll('#list-background img').forEach(img => img.classList.remove('selected'));
             e.target.classList.add('selected');
             selectedImageSrc = e.target.src;
+            selectedImageId = e.target.getAttribute('data-id');
             nextBtn.disabled = false;
         }
     });
@@ -82,14 +84,14 @@
 
         const image = selectedImageSrc.split("/assets/")[1]
 
-        console.log("Gambar yang diseleksi:", image);
         fetch("/set-background", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    image
+                    image,
+                    selectedImageId
                 })
             })
             .then(response => {

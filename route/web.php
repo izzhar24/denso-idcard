@@ -18,6 +18,7 @@ $router->middleware('guest')->group(function () use ($router) {
     $router->post('/set-employee', [HomeController::class, 'setEmployee']);
     $router->post('/set-photo', [HomeController::class, 'setPhoto']);
     $router->post('/set-background', [HomeController::class, 'setBackground']);
+    $router->post('/store-idcard', [HomeController::class, 'storeIdcard']);
     $router->post('/request-print-idcard', [HomeController::class, 'requestPrintIdcard']);
     $router->get('/login', [AuthController::class, 'showLogin']);
     $router->post('/login', [AuthController::class, 'login']);

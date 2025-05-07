@@ -6,6 +6,7 @@
                 <input type="text" class="form-control" id="idCard" name="idCard" placeholder="Your ID Card" autofocus="autofocus" data-rule="minlen:4" data-msg="Please enter at least 4 chars" onChange="cardCheck(this.value)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="if(event.keyCode === 13 && !event.repeat) cardCheck(this.value)" />
                 <div id="data_employee"></div>
                 <button id="nextBtn" class="d-none btn btn-dark btn-lg mt-2 rounded-pill" disabled>Next</button>
+                <button onclick="window.location.reload()" id="scanBtn" class="d-none btn btn-primary btn-lg mt-2 rounded-pill">Scan Ulang</button>
             </div>
 
         </div>
@@ -59,6 +60,7 @@
 <script>
     const result = document.getElementById('data_employee');
     const nextBtn = document.getElementById('nextBtn');
+    const scanBtn = document.getElementById('scanBtn');
     const formRequest = document.getElementById('requestForm');
     let employee = {};
 
@@ -134,6 +136,7 @@
                 console.log("NPK: ", data);
                 if (response != null) {
                     nextBtn.classList.remove('d-none');
+                    scanBtn.classList.remove('d-none');
                     nextBtn.disabled = false;
                     const {
                         id,
@@ -152,6 +155,7 @@
             },
             error: function(err) {
                 console.log("error", err);
+                scanBtn.classList.remove('d-none');
                 result.innerHTML = `<div class="alert alert-danger mt-2" role="alert">Data Tidak Di temukan</div>`;
             },
         });

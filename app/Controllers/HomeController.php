@@ -31,11 +31,19 @@ class HomeController extends Controller
 
     public function photo()
     {
+        if(!$_SESSION['idcard']['employee']){
+            $_SESSION['error'] = "Anda belum scan id card anda";
+            return redirect('/card');
+        }
         return view('photo');
     }
 
     public function chooseBackground()
     {
+        if(!$_SESSION['idcard']['photo']){
+            $_SESSION['error'] = "Anda belum melakukan foto selfie";
+            return redirect('/photo');
+        }
         $templates = Template::table()->get();
         return view('choose-background', [
             "templates" => $templates
@@ -69,13 +77,12 @@ class HomeController extends Controller
         $employee = $input['employee'] ?? null;
 
         $employeeCardExist = EmployeeCard::table()->where('employee_id', $employee['id'])->first();
-        $requestEmployeeCardExist = RequestEmployeeCard::table()->where('employee_Card_id', $employeeCardExist['id'])->where('status', '!=','APPROVED')->first();
+        if($employeeCardExist) $requestEmployeeCardExist = RequestEmployeeCard::table()->where('employee_card_id', $employeeCardExist['id'])->where('status', '!=','APPROVED')->first();
 
         $data = [
             "employee_id" => $employee['id'],
-            "exist" => false,
         ];
-        if ($employeeCardExist) json([
+        if (!empty($employeeCardExist)) json([
             ...$data,
             "exist" => true,
             "message" => "Anda sudah print ID Card",
@@ -114,6 +121,9 @@ class HomeController extends Controller
         $input = json_decode(file_get_contents("php://input"), true);
         $base64Image = $input['photo'] ?? null;
         $this->saveImage($base64Image);
+        return json([
+            "message" => "Set Photo Successfully"
+        ]);
         // $this->removeBackground();
     }
 
@@ -168,23 +178,52 @@ class HomeController extends Controller
     public function setBackground()
     {
         $input = json_decode(file_get_contents("php://input"), true);
-        $image = $input['image'] ?? null;
+        $imageId = $input['selectedImageId'] ?? null;
 
-        $_SESSION['idcard']['background'] = $image;
+        $_SESSION['idcard']['background'] = $imageId;
 
-        header('Content-Type: application/json');
-        return json(["image" => $image]);
+        return json(["imageId" => $imageId]);
     }
 
     public function printPreview()
     {
+        if(!$_SESSION['idcard']['background']){
+            $_SESSION['error'] = "Anda belum memilih background";
+            return redirect('/choose-background');
+        }
+
+        $background = $_SESSION['idcard']['background'];
+        $template = Template::table()->where('id', $background)->first();
+        // var_dump($template['image_path']); die;
         return view('print-preview', [
             "employee" => $_SESSION['idcard']['employee'],
             "photo" => $_SESSION['idcard']['photo']['original'],
-            "background" => $_SESSION['idcard']['background']
+            "background" => $template['image_path']
         ]);
     }
 
+    
+    // Store Id Card
+    public function storeIdcard()
+    {
+        $employeeId = $_SESSION['idcard']['employee']['id'];
+        $photo = $_SESSION['idcard']['photo']['original'];
+        $background = $_SESSION['idcard']['background'];
+
+        $employeeCard = EmployeeCard::table()->where('employee_id', $employeeId)->first();
+        if (!$employeeCard) {
+            EmployeeCard::table()->create([
+                "employee_id" => (int)$employeeId,
+                "selected_photo_path" => $photo,
+                "template_id" => (int)$background
+            ]);
+            // clear session idcard
+            unset($_SESSION['idcard']);
+            $_SESSION['success'] = "ID Card Berhasil Di Cetak";
+            return json(["message" => "Id Card has been created"]);
+        }
+        return json(["message" => "Id Card is already exists"]);
+    }
     // Request REPrint Id Card
     public function requestPrintIdcard()
     {

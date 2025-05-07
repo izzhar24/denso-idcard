@@ -109,26 +109,19 @@
             bg: "<?= asset($background) ?>"
         };
 
+        console.log(payload);
         // Kirim data ke server untuk disimpan
-        fetch('store-idcard.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (response.success) {
-                    // Setelah berhasil simpan, buka popup print
-                    openPrintWindow(payload);
-                } else {
-                    alert('Gagal menyimpan data.');
-                }
-            })
-            .catch(err => {
-                alert('Terjadi kesalahan: ' + err.message);
-            });
+
+        $.ajax({
+            url: '/store-idcard',
+            type: 'POST',
+            success: function(response) {
+                openPrintWindow(payload);
+            },
+            error: function(err) {
+                console.log("error", err);
+            },
+        });
     }
 
     function openPrintWindow(data) {
@@ -172,11 +165,11 @@
             </head>
             <body>
                 <div class="idcard-container">
-                    <img class="idcard-bg" src="${bg}">
+                    <img class="idcard-bg" src="${data.bg}">
                     <div class="idcard-content">
-                        <img class="idcard-photo" src="${photo}">
-                        <div class="idcard-info">${name}</div>
-                        <div class="idcard-info">${npk}</div>
+                        <img class="idcard-photo" src="${data.photo}">
+                        <div class="idcard-info">${data.name}</div>
+                        <div class="idcard-info">${data.npk}</div>
                     </div>
                 </div>
             </body>
@@ -188,6 +181,9 @@
             win.focus();
             win.print();
             win.close();
+            if (win.opener) {
+                win.opener.location.href = '/';
+            }
         };
     }
 </script>
