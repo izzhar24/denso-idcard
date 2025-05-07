@@ -24,13 +24,16 @@
                                     <td><?= $user['role'] ?></td>
                                     <td>
                                         <?php  if(($_SESSION['user']['role'] ) == "admin") { ?>
-                                        <a href="/users/<?= $user['id'] ?>/edit" class="btn btn-warning btn-sm">
+                                        <a href="/users/<?= $user['id'] ?>/edit" class="btn btn-warning btn-sm" title="Edit User">
                                             <i class="bx bx-edit"></i>
+                                        </a>
+                                        <a href="/users/<?= $user['id'] ?>/reset-password" class="btn btn-info btn-sm" title="Reset Password User">
+                                            <i class="bx bx-lock"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-danger"
                                             data-toggle="modal"
                                             data-target="#confirmDeleteModal"
-                                            onclick="setDeleteUrl('/users/<?= $user['id'] ?>/delete')">
+                                            onclick="setDeleteUrl('/users/<?= $user['id'] ?>/delete')" title="Delete User">
                                             <i class="bx bx-trash"></i>
                                         </a>
                                         <?php } ?>

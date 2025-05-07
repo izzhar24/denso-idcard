@@ -33,6 +33,8 @@ $router->middleware('auth')->group(function () use ($router) {
     $router->get('/users/{id}/edit', [UserController::class, 'edit']);
     $router->post('/users/{id}/update', [UserController::class, 'update']);
     $router->post('/users/{id}/delete', [UserController::class, 'destroy']);
+    $router->get('/users/{id}/reset-password', [UserController::class, 'resetPassword']);
+    $router->post('/users/{id}/reset-password', [UserController::class, 'storeResetPassword']);
 
     $router->get('/employees', [EmployeeController::class, 'index']);
     $router->get('/employees/create', [EmployeeController::class, 'create']);

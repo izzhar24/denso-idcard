@@ -89,4 +89,28 @@ class UserController extends Controller
         $_SESSION['success'] = 'Data berhasil dihapus';
         redirect('/users');
     }
+
+    public function resetPassword($id)
+    {
+        $user = User::table()->find($id);
+        view('admin.users.reset-password', compact('user'));
+    }
+
+    public function storeResetPassword($id)
+    {
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if (!$password || !$confirmPassword || $password !== $confirmPassword) {
+            $_SESSION['error'] = 'Password harus di isi atau konfirmasi password tidak sama';
+            return redirect("/users/$id/reset-password");
+        }
+
+        User::table()->where('id', $id)
+        ->update($id,[
+            'password' => password_hash($password, PASSWORD_DEFAULT)
+        ]);
+        $_SESSION['success'] = 'Password berhasil diubah';
+        return redirect('/users');
+    }
 }
