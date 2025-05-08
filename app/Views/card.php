@@ -6,7 +6,7 @@
                 <input type="text" class="form-control" id="idCard" name="idCard" placeholder="Your ID Card" autofocus="autofocus" data-rule="minlen:4" data-msg="Please enter at least 4 chars" onChange="cardCheck(this.value)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="if(event.keyCode === 13 && !event.repeat) cardCheck(this.value)" />
                 <div id="data_employee"></div>
                 <button id="nextBtn" class="d-none btn btn-dark btn-lg mt-2 rounded-pill" disabled>Next</button>
-                <button onclick="window.location.reload()" id="scanBtn" class="d-none btn btn-primary btn-lg mt-2 rounded-pill">Scan Ulang</button>
+                <button id="scanBtn" class="d-none btn btn-primary btn-lg mt-2 rounded-pill">Scan Ulang</button>
             </div>
 
         </div>
@@ -62,6 +62,7 @@
     const nextBtn = document.getElementById('nextBtn');
     const scanBtn = document.getElementById('scanBtn');
     const formRequest = document.getElementById('requestForm');
+    const idCard = document.getElementById('idCard');
     let employee = {};
 
 
@@ -123,7 +124,7 @@
 
     function cardCheck(id) {
         document.getElementById('data_employee').innerHTML = '<img src="assets/img/proses.gif">';
-        document.getElementById('idCard').disabled = true;
+        idCard.disabled = true;
         $.ajax({
             url: '/get-card',
             type: 'POST',
@@ -148,14 +149,17 @@
                         npk,
                         name
                     };
+                    result.classList.remove('d-none');
                     result.innerHTML = `<p>NPK: ${npk}</p><h3>Nama: ${name}</h3>`;
                 } else {
+                    result.classList.remove('d-none');
                     result.innerHTML = `<div class="alert alert-error" role="alert">Data Kosong</div>`;
                 }
             },
             error: function(err) {
                 console.log("error", err);
                 scanBtn.classList.remove('d-none');
+                result.classList.remove('d-none');
                 result.innerHTML = `<div class="alert alert-danger mt-2" role="alert">Data Tidak Di temukan</div>`;
             },
         });
@@ -180,7 +184,7 @@
                 console.log("data:", data);
                 if (data.exist && !data.status_request) {
                     showModal();
-                }else if (data.exist && data.status_request) {
+                } else if (data.exist && data.status_request) {
                     toastr.warning('Anda sudah mengajukan request print ulang card id, silahkan hubungi admin');
                     setTimeout(() => {
                         window.location.href = '/';
@@ -192,6 +196,16 @@
             .catch(error => {
                 console.error('Error:', error);
             });
+    });
+
+
+    scanBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        result.classList.add('d-none');
+        (this).classList.add('d-none');
+        nextBtn.classList.add('d-none');
+        idCard.disabled=false;
+        idCard.value="";
     });
 </script>
 
