@@ -11,7 +11,6 @@ class EmployeeCard extends Model
 
     public function employee($row)
     {
-        // return $this->belongsTo(Employee::class, 'employee_id');
         return Employee::table()->where('id', $row->employee_id)->first();
     }
 }
