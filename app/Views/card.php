@@ -5,8 +5,8 @@
             <div class="col-md-12 form-group">
                 <input type="text" class="form-control" id="idCard" name="idCard" placeholder="Your ID Card" autofocus="autofocus" data-rule="minlen:4" data-msg="Please enter at least 4 chars" onChange="cardCheck(this.value)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="if(event.keyCode === 13 && !event.repeat) cardCheck(this.value)" />
                 <div id="data_employee"></div>
-                <button id="nextBtn" class="d-none btn btn-dark btn-lg mt-2 rounded-pill" disabled>Next</button>
                 <button id="scanBtn" class="d-none btn btn-primary btn-lg mt-2 rounded-pill">Scan Ulang</button>
+                <button id="nextBtn" class="d-none btn btn-dark btn-lg mt-2 rounded-pill" disabled>Next</button>
             </div>
 
         </div>
@@ -142,15 +142,21 @@
                     const {
                         id,
                         npk,
-                        name
+                        name,
+                        nickname
                     } = data;
                     employee = {
                         id,
                         npk,
-                        name
+                        name,
+                        nickname
                     };
                     result.classList.remove('d-none');
-                    result.innerHTML = `<p>NPK: ${npk}</p><h3>Nama: ${name}</h3>`;
+                    result.innerHTML = `<div class="alert alert-primary mt-2" role="alert">
+                        <p style="text-align:left;"><span style="display:inline-block;width:150px;">NPK</span>: ${npk}</p>
+                        <h3 style="text-align:left;"><span style="display:inline-block;width:150px;">Name</span>: ${name}</h3>
+                        <h3 style="text-align:left;"><span style="display:inline-block;width:150px;">Nickname</span>: ${nickname}</h3>
+                    </div>`;
                 } else {
                     result.classList.remove('d-none');
                     result.innerHTML = `<div class="alert alert-error" role="alert">Data Kosong</div>`;

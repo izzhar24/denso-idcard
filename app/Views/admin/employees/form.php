@@ -20,15 +20,15 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="company" class="col-sm-4 col-form-label">Company</label>
+                                <label for="nickname" class="col-sm-4 col-form-label">Nickname</label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="company" class="form-control" value="<?= $employee['company'] ?? '' ?>" required>
+                                    <input type="text" name="nickname" class="form-control" value="<?= $employee['nickname'] ?? '' ?>" required>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                <label for="company" class="col-sm-4 col-form-label">Company</label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="plant" class="form-control" value="<?= $employee['plant'] ?? '' ?>" required>
+                                    <input type="text" name="company" class="form-control" value="<?= $employee['company'] ?? '' ?>" required>
                                 </div>
                             </div>
 
@@ -41,6 +41,12 @@
                         </div>
 
                         <div class="col-6">
+                            <div class="form-group row">
+                                <label for="plant" class="col-sm-4 col-form-label">Plant</label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="plant" class="form-control" value="<?= $employee['plant'] ?? '' ?>" required>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="kd_bu" class="col-sm-4 col-form-label">Bussiness Unit Code</label>
                                 <div class="col-sm-8">

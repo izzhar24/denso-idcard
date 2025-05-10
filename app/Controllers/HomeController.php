@@ -64,7 +64,7 @@ class HomeController extends Controller
 
     private function fetchCardData($id)
     {
-        $employee = Employee::table()->select(['id', 'npk', 'name'])->where('npk', $id)->first();
+        $employee = Employee::table()->select(['id', 'npk', 'name','nickname'])->where('npk', $id)->first();
         if (!$employee) json_error('Data karyawan tidak ditemukan', 404);
         return json($employee);
     }

@@ -59,7 +59,7 @@
                                                         data-target="#confirmPrintModal"
                                                         data-id="<?= $requestEmployeeCard['id'] ?>"
                                                         data-npk="<?= $requestEmployeeCard['employee']['npk'] ?>"
-                                                        data-name="<?= $requestEmployeeCard['employee']['name'] ?>"
+                                                        data-name="<?= $requestEmployeeCard['employee']['nickname'] ?>"
                                                         data-photo="<?= asset($requestEmployeeCard['employee_card']['selected_photo_path']) ?>"
                                                         data-bg="<?= asset($requestEmployeeCard['template']['image_path']) ?>">
                                                         <i class="bx bx-printer"></i>

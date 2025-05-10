@@ -95,9 +95,11 @@
         </div>
         <div class="d-none flex-column justify-content-center align-items-center" id="photos-container">
             <div id="photos"></div>
-            <div class="d-flex justify-content-between gap-3 my-3 mx-4">
-                <button class="btn bg-primary btn-lg rounded-pill" id="reset"><i class="icofont-ui-reply text-white icofont-2x"></i></button>
-                <button class="btn btn-dark btn-lg mt-2 rounded-pill" disabled id="btnNext">Next</button>
+            <div class="d-flex justify-content-between align-items-center gap-3 my-3 mx-4">
+                <button class="btn bg-primary btn-lg rounded-pill" id="reset">
+                    <i class="icofont-ui-reply text-white"></i>
+                </button>
+                <button class="btn btn-dark btn-lg rounded-pill" disabled id="btnNext">Next</button>
             </div>
         </div>
         <div id="zoomModal" onclick="closeZoom()">

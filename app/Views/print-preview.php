@@ -6,7 +6,7 @@
             <div class="idcard-content">
                 <img src="<?= $photo ?>" alt="img-template" class="idcard-photo">
                 <div class="idcard-info">
-                    <div class="employee-name"><?= $employee['name'] ?></div>
+                    <div class="employee-name"><?= $employee['nickname'] ?></div>
                     <div class="employee-npk"><?= $employee['npk'] ?></div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
         $('#confirmPrintModal').modal('hide');
 
         const payload = {
-            name: "<?= $employee['name'] ?>",
+            name: "<?= $employee['nickname'] ?>",
             npk: "<?= $employee['npk'] ?>",
             photo: "<?= $photo ?>",
             bg: "<?= asset($background) ?>"
@@ -168,7 +168,7 @@
                     <img class="idcard-bg" src="${data.bg}">
                     <div class="idcard-content">
                         <img class="idcard-photo" src="${data.photo}">
-                        <div class="idcard-info">${data.name}</div>
+                        <div class="idcard-info">${data.nickname}</div>
                         <div class="idcard-info">${data.npk}</div>
                     </div>
                 </div>

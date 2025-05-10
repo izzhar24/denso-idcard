@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS employees (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     npk VARCHAR(20) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
+    nickname VARCHAR(17) NOT NULL,
     company VARCHAR(100),
     plant VARCHAR(50),
     kd_bu VARCHAR(10),

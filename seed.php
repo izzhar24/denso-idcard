@@ -25,26 +25,26 @@ echo "✅ Seeded Users\n";
 
 // Seed Employees
 $employees = [
-    ['DENSO INDONESIA', 'BEKASI', '5402', 'TQM', '2090761', 'AJI WIBOWO', 'TETAP'],
-    ['HAMADEN INDONESIA', 'BEKASI', '5402', 'TQM', '2110677', 'YUDI SUSANTO', 'KONTRAK'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'HR-BEKASI', '2160472', 'HANA SARASWATI', 'TETAP'],
-    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160817', 'AGUS ALY', 'TETAP'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131366', 'RENO WIDODO', 'TETAP'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'TQM', '2180021', 'TIA RAHMAWATI', 'TETAP'],
-    ['HAMADEN INDONESIA', 'BEKASI', '3222', 'TQM', '2170021', 'SUGIYARTO', 'KONTRAK'],
-    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160821', 'INDRA WIJAYA', 'TETAP'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131321', 'ARDIANTO', 'TETAP'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131331', 'DODY DWI PRASETYO', 'TETAP'],
-    ['DENSO INDONESIA', 'BEKASI', '5402', 'TQM', '2090821', 'AGUS WAHYU', 'TETAP'],
-    ['HAMADEN INDONESIA', 'BEKASI', '5402', 'TQM', '2110821', 'LINDA SARI', 'KONTRAK'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'TQM', '2180121', 'RIZAL RACHMAN', 'TETAP'],
-    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160822', 'RIZA EKA PRASETYO', 'TETAP'],
-    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131322', 'RICO WIBISANA', 'TETAP']
+    ['DENSO INDONESIA', 'BEKASI', '5402', 'TQM', '2090761', 'AJI WIBOWO', 'TETAP', 'AJI WIBOWO'],
+    ['HAMADEN INDONESIA', 'BEKASI', '5402', 'TQM', '2110677', 'YUDI SUSANTO', 'KONTRAK', 'YUDI SUSANTO'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'HR-BEKASI', '2160472', 'HANA SARASWATI', 'TETAP', 'HANA SARASWA'],
+    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160817', 'AGUS ALY', 'TETAP', 'AGUS ALY'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131366', 'RENO WIDODO', 'TETAP', 'RENO WIDODO'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'TQM', '2180021', 'TIA RAHMAWATI', 'TETAP', 'TIA RAHMAWATI'],
+    ['HAMADEN INDONESIA', 'BEKASI', '3222', 'TQM', '2170021', 'SUGIYARTO', 'KONTRAK', 'SUGIYARTO'],
+    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160821', 'INDRA WIJAYA', 'TETAP', 'INDRA WIJAYA'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131321', 'ARDIANTO', 'TETAP', 'ARDIANTO'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131331', 'DODY DWI PRASETYO', 'TETAP', 'DODY DWI PRASE'],
+    ['DENSO INDONESIA', 'BEKASI', '5402', 'TQM', '2090821', 'AGUS WAHYU', 'TETAP', 'AGUS WAHYU'],
+    ['HAMADEN INDONESIA', 'BEKASI', '5402', 'TQM', '2110821', 'LINDA SARI', 'KONTRAK', 'LINDA SARI'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'TQM', '2180121', 'RIZAL RACHMAN', 'TETAP', 'RIZAL RACHMAN'],
+    ['DENSO INDONESIA', 'FAJAR', '3222', 'GA-BEKASI', '2160822', 'RIZA EKA PRASETYO', 'TETAP', 'RIZA EKA PRASE'],
+    ['DENSO INDONESIA', 'BEKASI', '3222', 'GA-BEKASI', '2131322', 'RICO WIBISANA', 'TETAP', 'RICO WIBISANA']
 ];
 
 $stmt = $pdo->prepare("
-    INSERT INTO employees (company, plant, kd_bu, nm_bu, npk, name, status_karyawan)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO employees (company, plant, kd_bu, nm_bu, npk, name, status_karyawan, nickname)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
 foreach ($employees as $emp) {
@@ -69,8 +69,8 @@ $stmtCard = $pdo->prepare("
     VALUES (?, ?, ?)
 ");
 
-for ($i = 1; $i <= count($employees); $i++) {
-    $stmtCard->execute([$i, 1, "uploads/employee_$i/photo1.jpg"]);
+for ($i = 1; $i <= 5; $i++) {
+    $stmtCard->execute([$i, 1, "uploads/employee/blm-ada-foto.jpg"]);
 }
 echo "✅ Seeded employee_card\n";
 

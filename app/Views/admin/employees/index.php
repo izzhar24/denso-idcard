@@ -14,6 +14,7 @@
                             <th scope="col">No</th>
                             <th scope="col">NPK</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Nickname</th>
                             <th scope="col">Company</th>
                             <th scope="col">Plant</th>
                             <th scope="col">BU Code</th>
@@ -34,6 +35,7 @@
                                         <td><?= $start + $key + 1 ?></td>
                                         <td><?= $employee['npk'] ?></td>
                                         <td><?= $employee['name'] ?></td>
+                                        <td><?= $employee['nickname'] ?></td>
                                         <td><?= $employee['company'] ?></td>
                                         <td><?= $employee['plant'] ?></td>
                                         <td><?= $employee['kd_bu'] ?></td>
