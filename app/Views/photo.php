@@ -9,14 +9,12 @@
 
     #photos {
         height: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, auto);
+        display: flex;
+        justify-content: center;
         gap: 10px;
         padding: 25px;
         max-width: 700px;
         margin: auto;
-        justify-items: center;
     }
 
     #photos img {
