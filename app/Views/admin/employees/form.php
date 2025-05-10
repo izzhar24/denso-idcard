@@ -23,6 +23,7 @@
                                 <label for="nickname" class="col-sm-4 col-form-label">Nickname</label>
                                 <div class="col-sm-8">
                                     <input type="text" name="nickname" class="form-control" value="<?= $employee['nickname'] ?? '' ?>" required>
+                                    <small class="form-text text-muted">Max 17 Charachter</small>
                                 </div>
                             </div>
                             <div class="form-group row">
