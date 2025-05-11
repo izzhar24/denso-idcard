@@ -90,6 +90,7 @@
             <button id="snap" type="button" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
                 <i class="icofont-camera icofont-2x text-white"></i>
             </button>
+            <div id="countdown" style="position: absolute; top: 40%; font-size: 5rem; color: white; opacity: 0.5; transition: opacity 0.3s;" class="text-center d-none"></div>
         </div>
         <div class="d-none flex-column justify-content-center align-items-center" id="photos-container">
             <div id="photos"></div>
@@ -97,7 +98,9 @@
                 <button class="btn bg-primary btn-lg rounded-pill" id="reset">
                     <i class="icofont-ui-reply text-white"></i>
                 </button>
-                <button class="btn btn-dark btn-lg rounded-pill" disabled id="btnNext">Next</button>
+                <button class="btn btn-dark btn-lg rounded-pill" disabled id="btnNext"
+                    data-toggle="modal"
+                    data-target="#confirmPhotoSelected">Next</button>
             </div>
         </div>
         <div id="zoomModal" onclick="closeZoom()">
@@ -105,6 +108,28 @@
         </div>
     </div>
 </section>
+
+<!-- Konfirmasi Foto -->
+
+<div class="modal fade" id="confirmPhotoSelected" tabindex="-1" role="dialog" aria-labelledby="confirmPhotoSelectedLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah anda yakin pilih foto ini ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="confirmPhotoSelected()">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php startPush('scripts'); ?>
 <script>
@@ -115,6 +140,7 @@
     const resetBtn = document.getElementById('reset');
     const photosContainer = document.getElementById('photos-container');
     const takePhoto = document.getElementById('take-photo');
+    const countdown = document.getElementById('countdown');
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -129,12 +155,25 @@
         .then(stream => video.srcObject = stream)
         .catch(err => alert("Webcam error: " + err.message));
 
-    snap.addEventListener('click', () => {
+    snap.addEventListener('click', (e) => {
+        e.preventDefault();
+        snap.disabled = true;        
         if (capturedPhotos.length >= 4) return;
-
         // Flash effect
-        video.classList.add('flash-effect');
-        setTimeout(() => video.classList.remove('flash-effect'), 200);
+        let count = 5;
+        const timer = setInterval(() => {
+            countdown.classList.replace('d-none', 'd-flex');
+            countdown.innerHTML = (count > 0) ? count : '';
+            console.log(count);
+            if (count === 0) {
+                clearInterval(timer);
+                video.classList.add('flash-effect');
+                countdown.classList.replace('d-flex', 'd-none');
+                snap.disabled = false;
+            }
+            count--;
+        }, 1000);
+        setTimeout(() => video.classList.remove('flash-effect'), 500);
 
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const img = document.createElement('img');
@@ -173,7 +212,8 @@
         photosContainer.classList.replace('d-flex', 'd-none');
     });
 
-    nextBtn.addEventListener('click', () => {
+
+    function confirmPhotoSelected() {
         if (!selectedImageSrc) return;
 
         fetch("/set-photo", {
@@ -188,10 +228,11 @@
             .then(res => res.json())
             .then(data => {
                 console.log(data);
+                $('#confirmPhotoSelected').modal('hide');
                 window.location.href = "/choose-background";
             })
             .catch(err => console.error(err));
-    });
+    }
 
     // Zoom on double-click
     photos.addEventListener('dblclick', (e) => {
