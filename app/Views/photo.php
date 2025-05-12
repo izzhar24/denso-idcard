@@ -91,7 +91,7 @@
             <button id="snap" type="button" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
                 <i class="icofont-camera icofont-2x text-white"></i>
             </button>
-            <div id="countdown" style="position: absolute; top: 40%; font-size: 5rem; color: white; opacity: 0.5; transition: opacity 0.3s;" class="text-center d-none"></div>
+            <div id="countdown" style="position: absolute; top: 30%; font-size: 10rem; color: white; opacity: 0.5; transition: opacity 0.3s;" class="text-center d-none"></div>
         </div>
         <div class="d-none flex-column justify-content-center align-items-center" id="photos-container">
             <div id="photos"></div>
