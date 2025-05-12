@@ -86,6 +86,7 @@
 <section id="hero" class="d-flex flex-column justify-content-center">
     <div class="container" data-aos="zoom-in" data-aos-delay="100">
         <div id="take-photo" class="d-flex flex-column justify-content-center align-items-center">
+            <div id="remaining-count" class="position-absolute text-white bg-dark px-3 py-1 rounded" style="top: 10px; z-index: 10; opacity: 0.8;">Sisa 4 foto lagi</div>
             <video id="video" autoplay class="mb-3"></video>
             <button id="snap" type="button" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
                 <i class="icofont-camera icofont-2x text-white"></i>
@@ -110,7 +111,6 @@
 </section>
 
 <!-- Konfirmasi Foto -->
-
 <div class="modal fade" id="confirmPhotoSelected" tabindex="-1" role="dialog" aria-labelledby="confirmPhotoSelectedLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -141,6 +141,7 @@
     const photosContainer = document.getElementById('photos-container');
     const takePhoto = document.getElementById('take-photo');
     const countdown = document.getElementById('countdown');
+    const remainingCountPhoto = document.getElementById('remaining-count');
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -148,6 +149,7 @@
     canvas.height = 427;
     let capturedPhotos = [];
     let selectedImageSrc = null;
+    let totalPhotos = 4;
 
     navigator.mediaDevices.getUserMedia({
             video: true
@@ -155,9 +157,14 @@
         .then(stream => video.srcObject = stream)
         .catch(err => alert("Webcam error: " + err.message));
 
+    function updateRemainingText() {
+        const remaining = totalPhotos - capturedPhotos.length;
+        remainingCountPhoto.innerText = `Sisa ${remaining} foto lagi`;
+    }
+
     snap.addEventListener('click', (e) => {
         e.preventDefault();
-        snap.disabled = true;        
+        snap.disabled = true;
         if (capturedPhotos.length >= 4) return;
         // Flash effect
         let count = 5;
@@ -169,6 +176,7 @@
                 clearInterval(timer);
                 video.classList.add('flash-effect');
                 countdown.classList.replace('d-flex', 'd-none');
+                updateRemainingText();
                 snap.disabled = false;
             }
             count--;
@@ -210,6 +218,7 @@
         selectedImageSrc = null;
         takePhoto.classList.replace('d-none', 'd-flex');
         photosContainer.classList.replace('d-flex', 'd-none');
+        remainingCountPhoto.innerText = `Sisa 4 foto lagi`;
     });
 
 
