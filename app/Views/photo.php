@@ -1,9 +1,20 @@
 <?php startPush('style') ?>
 <style>
+    #video-wrapper {
+        position: relative;
+        width: 480px;
+        height: 640px;
+        overflow: hidden;
+    }
+
     #video {
-        width: 30rem;
-        height: 40.5rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         object-fit: cover;
+        transition: transform 0.3s;
         border: 2px solid rgb(15, 67, 188);
     }
 
@@ -87,10 +98,19 @@
     <div class="container" data-aos="zoom-in" data-aos-delay="100">
         <div id="take-photo" class="d-flex flex-column justify-content-center align-items-center">
             <div id="remaining-count" class="position-absolute text-white bg-dark px-3 py-1 rounded" style="top: 10px; z-index: 10; opacity: 0.8;">Sisa 4 foto lagi</div>
-            <video id="video" autoplay class="mb-3"></video>
-            <button id="snap" type="button" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
-                <i class="icofont-camera icofont-2x text-white"></i>
-            </button>
+            <!-- WRAPPER UNTUK VIDEO -->
+            <div id="video-wrapper">
+                <video id="video" autoplay class="mb-3"></video>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center gap-3 my-3 mx-4">
+                <button id="snap" type="button" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
+                    <i class="icofont-camera icofont-2x text-white"></i>
+                </button>
+                <button onclick="rotateVideo()" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
+                    <i class="icofont-refresh icofont-2x text-white"></i>
+                </button>
+            </div>
             <div id="countdown" style="position: absolute; top: 30%; font-size: 10rem; color: white; opacity: 0.5; transition: opacity 0.3s;" class="text-center d-none"></div>
         </div>
         <div class="d-none flex-column justify-content-center align-items-center" id="photos-container">
@@ -134,6 +154,7 @@
 <?php startPush('scripts'); ?>
 <script>
     const video = document.getElementById('video');
+    const wrapper = document.getElementById('video-wrapper');
     const snap = document.getElementById('snap');
     const photos = document.getElementById('photos');
     const nextBtn = document.getElementById('btnNext');
@@ -150,6 +171,15 @@
     let capturedPhotos = [];
     let selectedImageSrc = null;
     let totalPhotos = 4;
+    let rotateDeg = 0;
+
+    video.addEventListener('loadedmetadata', () => {
+        // Cek apakah orientasi awal perlu disesuaikan
+        const isPortrait = video.videoHeight > video.videoWidth;
+        if (isPortrait) {
+            rotateVideo(); // Atau auto rotate jika perlu
+        }
+    });
 
     navigator.mediaDevices.getUserMedia({
             video: true
@@ -162,12 +192,29 @@
         remainingCountPhoto.innerText = `Sisa ${remaining} foto lagi`;
     }
 
+    function rotateVideo() {
+        // Simpan ukuran asli video
+        const originalWidth = video.videoWidth || video.clientWidth;
+        const originalHeight = video.videoHeight || video.clientHeight;
+
+        console.log(`Original Width: ${originalWidth}, Original Height: ${originalHeight}`);
+        // width: 30rem;
+        // height: 40.5rem;
+        rotateDeg = (rotateDeg + 90) % 360;
+
+        // Swap ukuran wrapper untuk 90°/270°
+        if (rotateDeg === 90 || rotateDeg === 270) {
+            wrapper.style.width = '480px';
+            wrapper.style.height = '640px';
+        }
+    }
+
     snap.addEventListener('click', (e) => {
         e.preventDefault();
         snap.disabled = true;
         if (capturedPhotos.length >= 4) return;
         // Flash effect
-        let count = 5;
+        let count = 1;
         const timer = setInterval(() => {
             countdown.classList.replace('d-none', 'd-flex');
             countdown.innerHTML = (count > 0) ? count : '';
