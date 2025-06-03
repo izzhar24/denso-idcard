@@ -1,21 +1,20 @@
 <?php startPush('style') ?>
 <style>
-    #video-wrapper {
-        position: relative;
-        width: 480px;
-        height: 640px;
-        overflow: hidden;
-    }
-
     #video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        position: relative;
+        transform: rotate(90deg);
+        height: 480px;
+        width: 640px;
+        overflow: hidden;
         object-fit: cover;
         transition: transform 0.3s;
         border: 2px solid rgb(15, 67, 188);
+    }
+
+    #remaining-count {
+        top: 0;
+        z-index: 10;
+        opacity: 0.5
     }
 
     #photos {
@@ -91,25 +90,31 @@
     .gap-3>*+* {
         margin-left: 1rem;
     }
+
+    button#snap {
+        position: absolute;
+        bottom: -105px;
+        right: 47%;
+    }
 </style>
 <?php endPush() ?>
 
 <section id="hero" class="d-flex flex-column justify-content-center">
     <div class="container" data-aos="zoom-in" data-aos-delay="100">
         <div id="take-photo" class="d-flex flex-column justify-content-center align-items-center">
-            <div id="remaining-count" class="position-absolute text-white bg-dark px-3 py-1 rounded" style="top: 10px; z-index: 10; opacity: 0.8;">Sisa 4 foto lagi</div>
+            <div id="remaining-count" class="text-white bg-dark px-3 py-1 rounded">Sisa 4 foto lagi</div>
             <!-- WRAPPER UNTUK VIDEO -->
-            <div id="video-wrapper">
-                <video id="video" autoplay class="mb-3"></video>
-            </div>
+            <!-- <div id="video-wrapper"> -->
+            <video id="video" autoplay class="mb-3"></video>
+            <!-- </div> -->
 
-            <div class="d-flex justify-content-between align-items-center gap-3 my-3 mx-4">
-                <button id="snap" type="button" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
+            <div class="d-flex justify-content-between align-items-center gap-3 my-3 mx-4" style="top: 60px;">
+                <button id="snap" type="button" class="mt-4 btn bg-primary rounded-circle d-flex justify-content-center align-items-center" style="width: 70px; height: 70px;">
                     <i class="icofont-camera icofont-2x text-white"></i>
                 </button>
-                <button onclick="rotateVideo()" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
+                <!-- <button onclick="rotateVideo()" class="btn bg-primary rounded-circle d-flex justify-content-center align-items-center camera-btn" style="width: 70px; height: 70px;">
                     <i class="icofont-refresh icofont-2x text-white"></i>
-                </button>
+                </button> -->
             </div>
             <div id="countdown" style="position: absolute; top: 30%; font-size: 10rem; color: white; opacity: 0.5; transition: opacity 0.3s;" class="text-center d-none"></div>
         </div>
@@ -197,16 +202,22 @@
         const originalWidth = video.videoWidth || video.clientWidth;
         const originalHeight = video.videoHeight || video.clientHeight;
 
-        console.log(`Original Width: ${originalWidth}, Original Height: ${originalHeight}`);
+
         // width: 30rem;
         // height: 40.5rem;
         rotateDeg = (rotateDeg + 90) % 360;
 
+
+        video.style.transform = `rotate(${rotateDeg}deg)`;
+        // Swap ukuran wrapper untuk 90°/270°
         // Swap ukuran wrapper untuk 90°/270°
         if (rotateDeg === 90 || rotateDeg === 270) {
-            wrapper.style.width = '480px';
             wrapper.style.height = '640px';
+            wrapper.style.width = '480px';
+            console.log(`Original Width: ${originalWidth}, Original Height: ${originalHeight}`);
         }
+        // video.style.width = `${originalHeight}px`;
+        // video.style.height = `${originalWidth}px`;
     }
 
     snap.addEventListener('click', (e) => {
@@ -214,7 +225,7 @@
         snap.disabled = true;
         if (capturedPhotos.length >= 4) return;
         // Flash effect
-        let count = 1;
+        let count = 5;
         const timer = setInterval(() => {
             countdown.classList.replace('d-none', 'd-flex');
             countdown.innerHTML = (count > 0) ? count : '';
