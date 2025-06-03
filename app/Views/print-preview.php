@@ -47,7 +47,7 @@
         /* ID card size */
         height: 85.6mm;
         width: 53.98mm;
-        font-family: 'Arial', sans-serif;
+        font-family: Verdana, sans-serif;
         scale: calc(1.5);
     }
 
@@ -71,15 +71,19 @@
     }
 
     .idcard-photo {
-        width: 25mm;
-        height: 35mm;
+        /* width: 25mm;
+        height: 35mm; */
+        width: 354px;
+        /* 30mm */
+        height: 437px;
+        /* 37mm */
         object-fit: cover;
         margin-bottom: 2mm;
     }
 
     .idcard-info {
         color: black;
-        font-size: 3mm;
+        font-size: 7pt;
         font-weight: bold;
     }
 
