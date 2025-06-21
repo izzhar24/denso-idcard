@@ -170,7 +170,7 @@
                     <img class="idcard-bg" src="${data.bg}">
                     <div class="idcard-content">
                         <img class="idcard-photo" src="${data.photo}">
-                        <div class="idcard-info">${data.nickname}</div>
+                        <div class="idcard-info">${data.name}</div>
                         <div class="idcard-info">${data.npk}</div>
                     </div>
                 </div>
