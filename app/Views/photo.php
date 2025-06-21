@@ -219,11 +219,11 @@
         // video.style.width = `${originalHeight}px`;
         // video.style.height = `${originalWidth}px`;
     }
-
+    updateRemainingText();
     snap.addEventListener('click', (e) => {
         e.preventDefault();
         snap.disabled = true;
-        if (capturedPhotos.length >= 4) return;
+        if (capturedPhotos.length >= totalPhotos) return;
         // Flash effect
         let count = 5;
         const timer = setInterval(() => {
@@ -241,14 +241,17 @@
         }, 1000);
         setTimeout(() => video.classList.remove('flash-effect'), 500);
 
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        context.translate(canvas.width / 2, canvas.height / 2);
+        context.rotate(Math.PI / 2);
+        context.drawImage(video, -canvas.height / 2, -canvas.width / 2, canvas.height, canvas.width);
+        context.resetTransform();
         const img = document.createElement('img');
         img.src = canvas.toDataURL('image/jpeg');
         img.alt = "Captured Photo";
         photos.appendChild(img);
         capturedPhotos.push(img.src);
 
-        if (capturedPhotos.length === 4) {
+        if (capturedPhotos.length === totalPhotos) {
             snap.disabled = true;
             photosContainer.classList.replace('d-none', 'd-flex');
             takePhoto.classList.replace('d-flex', 'd-none');
@@ -276,7 +279,7 @@
         selectedImageSrc = null;
         takePhoto.classList.replace('d-none', 'd-flex');
         photosContainer.classList.replace('d-flex', 'd-none');
-        remainingCountPhoto.innerText = `Sisa 4 foto lagi`;
+        remainingCountPhoto.innerText = `Sisa ${totalPhotos} foto lagi`;
     });
 
 

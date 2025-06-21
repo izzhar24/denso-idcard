@@ -71,12 +71,10 @@
     }
 
     .idcard-photo {
-        /* width: 25mm;
-        height: 35mm; */
-        width: 354px;
-        /* 30mm */
-        height: 437px;
-        /* 37mm */
+        width: 25mm;
+        height: 35mm;
+        /* height: 480px;
+        width: 640px; */
         object-fit: cover;
         margin-bottom: 2mm;
     }
