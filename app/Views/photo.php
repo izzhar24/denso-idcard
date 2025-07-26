@@ -175,7 +175,7 @@
     canvas.height = 427;
     let capturedPhotos = [];
     let selectedImageSrc = null;
-    let totalPhotos = 4;
+    let totalPhotos = 5;
     let rotateDeg = 0;
 
     video.addEventListener('loadedmetadata', () => {
@@ -191,6 +191,7 @@
         })
         .then(stream => video.srcObject = stream)
         .catch(err => alert("Webcam error: " + err.message));
+
 
     function updateRemainingText() {
         const remaining = totalPhotos - capturedPhotos.length;
@@ -219,26 +220,41 @@
         // video.style.width = `${originalHeight}px`;
         // video.style.height = `${originalWidth}px`;
     }
+
     updateRemainingText();
     snap.addEventListener('click', (e) => {
         e.preventDefault();
         snap.disabled = true;
-        if (capturedPhotos.length >= totalPhotos) return;
+        // if (capturedPhotos.length >= totalPhotos) return;
         // Flash effect
-        let count = 5;
+        let count = 3;
         const timer = setInterval(() => {
             countdown.classList.replace('d-none', 'd-flex');
             countdown.innerHTML = (count > 0) ? count : '';
             console.log(count);
-            if (count === 0) {
+            if (count < 1) {
                 clearInterval(timer);
                 video.classList.add('flash-effect');
+
+                // Add sound effect camera shutter
+                const audio = new Audio('<?= asset('sounds/shutter-1434.wav') ?>');
+                audio.play();
                 countdown.classList.replace('d-flex', 'd-none');
                 updateRemainingText();
                 snap.disabled = false;
+                if (capturedPhotos.length === totalPhotos) {
+                    setTimeout(() => {
+                        snap.disabled = true;
+                        photosContainer.classList.replace('d-none', 'd-flex');
+                        takePhoto.classList.replace('d-flex', 'd-none');
+                        nextBtn.disabled = true;
+                    }, 1000);
+                }
             }
             count--;
+
         }, 1000);
+
         setTimeout(() => video.classList.remove('flash-effect'), 500);
 
         context.translate(canvas.width / 2, canvas.height / 2);
@@ -250,13 +266,6 @@
         img.alt = "Captured Photo";
         photos.appendChild(img);
         capturedPhotos.push(img.src);
-
-        if (capturedPhotos.length === totalPhotos) {
-            snap.disabled = true;
-            photosContainer.classList.replace('d-none', 'd-flex');
-            takePhoto.classList.replace('d-flex', 'd-none');
-            nextBtn.disabled = true;
-        }
     });
 
     photos.addEventListener('click', (e) => {
@@ -265,7 +274,7 @@
             e.target.classList.add('selected');
             selectedImageSrc = e.target.src;
 
-            if (capturedPhotos.length === 4) {
+            if (capturedPhotos.length === totalPhotos) {
                 nextBtn.disabled = false;
             }
         }
