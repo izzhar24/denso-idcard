@@ -49,6 +49,12 @@ abstract class Model
         return $this;
     }
 
+    public function whereLike($column, $value)
+    {
+        $this->wheres[] = [$column, 'LIKE', "%{$value}%"];
+        return $this;
+    }
+
     public static function exists($column, $value)
     {
         $table = static::$table; // Pastikan properti static $table didefinisikan di masing-masing model
